@@ -17,12 +17,18 @@ def login():
     if(username=="" or password==""):
         mb.showerror(title="Invalid credentials",message="Please Enter Correct credentials")
     else:
-
-        mydb = mysql.connector.connect(host='localhost',username='root',password='mysql022004',database='carnival')
+        mydb = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='mysql022004',
+            database='carnival'
+        )
+        # mydb = mysql.connector.connect(host='localhost',username='root',password='mysql022004',database='carnival')
         mycursor = mydb.cursor()
-        query = "select * from user_login where username= %s"
-        mycursor.execute(query, username)
+        query = "select * from user_login where username= 'omkar'"
+        mycursor.execute(query)
         row = mycursor.fetchone()
+
         if(row == username):
             mb.showinfo(title="SUCCESS", message="LOGIN SUCCESSFULL")
         else:
