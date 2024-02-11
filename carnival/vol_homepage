@@ -1,0 +1,92 @@
+# import mysql.connector
+# mydb = mysql.connector.connect(
+#     host='localhost',
+#     user='root',
+#     password='mysql022004',
+#     database='carnival'
+# )
+# mycursor = mydb.cursor()
+# mycursor.execute('SELECT * FROM user_login')
+# users = mycursor.fetchall()
+# for user in users:
+#     print(user)
+import tkinter as tr
+import customtkinter as ctk
+from tkinter import messagebox as mb
+def manage():
+    window = ctk.CTk()
+    ctk.CTkButton(window, text='VOLUNTEERS', fg_color='#037476').pack(expand=True, fill='both', pady=10)
+    window.mainloop()
+class SlidePanel(ctk.CTkFrame):
+    def __init__(self, parent, start_pos, end_pos):
+        super().__init__(master=parent)
+
+        # general attributes
+        self.start_pos = start_pos + 0.04
+        self.end_pos = end_pos - 0.03
+        self.width = abs(start_pos - end_pos)
+
+        # animation logic
+        self.pos = self.start_pos
+        self.in_start_pos = True
+
+        # layout
+        self.place(relx=self.start_pos, rely=0.05, relwidth=self.width, relheight=0.9)
+
+    def animate(self):
+        if self.in_start_pos:
+            self.animate_forward()
+        else:
+            self.animate_backwards()
+
+    def animate_forward(self):
+        if self.pos > self.end_pos:
+            self.pos -= 0.008
+            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+            self.after(8, self.animate_forward)
+        else:
+            self.in_start_pos = False
+
+    def animate_backwards(self):
+        if self.pos < self.start_pos:
+            self.pos += 0.008
+            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+            self.after(10, self.animate_backwards)
+        else:
+            self.in_start_pos = True
+
+window = ctk.CTk()
+window.title('volunteer HOME')
+window.geometry('600x400')
+window.configure(bg='#BEF4FF')
+
+win_hm = tr.Frame(window)
+win_man = tr.Frame(window)
+win_eve = tr.Frame(window)
+
+win_hm.pack(pady=20)
+# win_man.grid(row=0,column=0)
+# win_eve.grid(row=0,column=0)
+
+def hm():
+    btn1 = ctk.CTkButton(win_hm,text='hm_btn1')
+    btn1.pack(pady=10,anchor='center')
+    btn2 = ctk.CTkButton(win_hm, text='hm_btn2')
+    btn2.pack(pady=10, anchor='center')
+
+
+
+animated_panel = SlidePanel(window, 1.0, 0.7)
+animated_panel.configure(fg_color='#6ebfc9',bg_color='#6ebfc9')
+ctk.CTkButton(animated_panel, text='HOME',fg_color='#037476',command=hm).pack( fill='both', pady=10)
+ctk.CTkButton(animated_panel, text='MANAGE',fg_color='#037476',command=manage).pack( fill='both', pady=10)
+ctk.CTkButton(animated_panel, text='MY EVENTS',fg_color='#037476').pack( fill='both', pady=10)
+button_x = 0.5
+button = ctk.CTkButton(window, text='☰', command=animated_panel.animate,height=10,width=2,fg_color='#037476',bg_color='black')
+button.place(relx=0.98, rely=0.03, anchor='center')
+
+
+
+# eventbox = tr.Entry(frame,font=['Arial',13])
+# eventbox.gridrow=
+window.mainloop()
