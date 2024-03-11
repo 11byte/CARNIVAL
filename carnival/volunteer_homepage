@@ -1,0 +1,93 @@
+import tkinter as tr
+import customtkinter as ctk
+from tkinter import messagebox as mb
+def manage():
+    window = ctk.CTk()
+    ctk.CTkButton(window, text='VOLUNTEERS', fg_color='#037476').pack(expand=True, fill='both', pady=10)
+    window.mainloop()
+class SlidePanel(ctk.CTkFrame):
+    def __init__(self, parent, start_pos, end_pos):
+        super().__init__(master=parent)
+
+        # general attributes
+        self.start_pos = start_pos + 0.04
+        self.end_pos = end_pos - 0.03
+        self.width = abs(start_pos - end_pos)
+
+        # animation logic
+        self.pos = self.start_pos
+        self.in_start_pos = True
+
+        # layout
+        self.configure(fg_color='#213354',bg_color='#213354')
+        self.place(relx=self.start_pos, rely=0.05, relwidth=self.width, relheight=0.9)
+
+    def animate(self):
+        if self.in_start_pos:
+            self.animate_forward()
+        else:
+            self.animate_backwards()
+
+    def animate_forward(self):
+        if self.pos > self.end_pos:
+            self.pos -= 0.008
+            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+            self.after(8, self.animate_forward)
+        else:
+            self.in_start_pos = False
+
+    def animate_backwards(self):
+        if self.pos < self.start_pos:
+            self.pos += 0.008
+            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+            self.after(10, self.animate_backwards)
+        else:
+            self.in_start_pos = True
+
+window = ctk.CTk()
+window.title('volunteer HOME')
+window.geometry('1000x600')
+window.configure(fg_color='#213354',bg_color='#213354')
+
+win_hm = ctk.CTkFrame(window,height=800,width=600)
+win_man = ctk.CTkFrame(window,height=800,width=600)
+win_eve = ctk.CTkFrame(window,height=800,width=600)
+
+
+
+win_eve.pack(pady=5, fill='both')
+frame2 = ctk.CTkFrame(window, fg_color='#335BA2', height=1000, width=700)
+frame2.pack(side='top', expand=True, fill='x')
+frame2.place(x=10)
+frame2.tkraise()
+print('event')
+
+win_man.pack(pady=5, fill='both')
+frame3 = ctk.CTkFrame(window,fg_color='#7DAAFB',height=1000,width=700)
+frame3.pack(side='top',expand=True,fill='x')
+frame3.place(x=10)
+frame3.tkraise()
+print('home')
+
+
+win_hm.pack(pady=5, fill='both')
+frame1 = ctk.CTkFrame(window,fg_color='#CADDFF',height=1000,width=700)
+frame1.pack(side='top',expand=True,fill='x')
+frame1.place(x=10)
+frame1.tkraise()
+print('home')
+
+
+
+
+animated_panel = SlidePanel(window, 1.0, 0.7)
+animated_panel.configure(fg_color='#C0CCE2',bg_color='#C0CCE2',height=1500,border_width=5)
+ctk.CTkButton(animated_panel, text='HOME',text_color='#213354',fg_color='#CADDFF',border_width=2,border_color='#213354',width=200,command=lambda: frame1.tkraise()).pack( pady=10)
+ctk.CTkButton(animated_panel, text='MANAGE',text_color='#213354' ,border_width=2,border_color='#213354',fg_color='#7DAAFB',width=200,command=lambda: frame3.tkraise()).pack( pady=10)
+ctk.CTkButton(animated_panel, text='MY EVENTS',fg_color='#335BA2',border_width=2,border_color='#213354',text_color='white',width=200,command=lambda: frame2.tkraise()).pack(  pady=10)
+button_x = 0.5
+button = ctk.CTkButton(window, text='☰', command=animated_panel.animate,height=10,width=2,fg_color='#213354',bg_color='black')
+button.place(relx=0.98, rely=0.03, anchor='center')
+
+
+window.mainloop()
