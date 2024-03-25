@@ -1,4 +1,5 @@
-# import mysql.connector
+import mysql.connector
+from idlelib.tooltip import Hovertip
 # mydb = mysql.connector.connect(
 #     host='localhost',
 #     user='root',
@@ -60,7 +61,7 @@ class SlidePanel(ctk.CTkFrame):
 window = ctk.CTk()
 window.title('volunteer HOME')
 window.geometry('1000x600')
-window.configure(fg_color='#213354',bg_color='#213354')
+window.configure(fg_color='#000c38',bg_color='#000c38')
 
 win_hm = ctk.CTkFrame(window,height=800,width=600)
 win_man = ctk.CTkFrame(window,height=800,width=600)
@@ -77,7 +78,8 @@ win_eve = ctk.CTkFrame(window,height=800,width=600)
 #     btn2 = ctk.CTkButton(win_hm, text='hm_btn2')
 #     btn2.pack(pady=10, anchor='center')
 
-
+sym_lbl = ctk.CTkLabel(window,text='I',font=('Webdings',550),bg_color='black',height=600)
+sym_lbl.place(x=580,y=0)
 win_eve.pack(pady=5, fill='both')
 frame2 = ctk.CTkFrame(window, fg_color='#335BA2', height=1000, width=700)
 frame2.pack(side='top', expand=True, fill='x')
@@ -151,37 +153,126 @@ table = ttk.Treeview(frame3,height=10,columns=('Name','Phone No.','ID'),show='he
 table.heading('Name',text='Participant Name')
 table.heading('Phone No.',text='Participant Contact No.')
 table.heading('ID',text='Moodle ID')
-table.place(x=20,y=170)
+table.place(x=20,y=210)
 
 mbtn1 = ctk.CTkButton(frame3,text='FETCH CURRENT BATCH',fg_color='#213354')
-mbtn1.place(x=10,y=100)
+mbtn1.place(x=10,y=130)
 
 mbtn2 = ctk.CTkButton(frame3,text='CLEAR CURRENT BATCH',fg_color='#213354')
-mbtn2.place(x=10,y=350)
+mbtn2.place(x=10,y=370)
 
-mlbl1 =ctk.CTkLabel(frame3,text='MANAGE EVENT',font=("Gabriola", 50,"bold","italic"))
-mlbl1.place(x=40,y=0)
+mlbl1 =ctk.CTkLabel(frame3,text='MANAGE EVENT...',font=("Gabriola", 65,"bold","italic"))
+mlbl1.place(x=140,y=5)
 
 # workspace
 my_tab = ctk.CTkTabview(frame2,width=700,height=800,
+                            border_width=2,
+                             border_color='#bec9f1',
                              fg_color='white',text_color='black',
                              text_color_disabled='white',
-                             segmented_button_fg_color='#0a8197',
+                             segmented_button_unselected_color='#bec9f1',
+                             segmented_button_fg_color='#bec9f1',
                              segmented_button_unselected_hover_color='#b7d6fd',
                              segmented_button_selected_color='#d6fdb7')
 my_tab.pack(pady=10,expand=True,fill='both')
-my_tab.configure(fg_color='black')
-case_1 = my_tab.add('FEEDBACK')
+my_tab.configure(fg_color='#081548')
+case_1 = my_tab.add('FEEDBACK \nGENERATOR')
 case_2 = my_tab.add('IMAGE GALLERY')
 case_3 = my_tab.add('VOLUNTEER \nBROADCAST')
 
+#feedback creation
+flbl = ctk.CTkLabel(case_1,text='Enter total no of questions',text_color='white')
+flbl.place(x=10,y=2)
+fe1 = ctk.CTkEntry(case_1,width=40,fg_color='#C0CCE2',text_color='black')
+fe1.place(x=170,y=2)
+
+class features:
+    def que(self):
+        frame = ctk.CTkFrame(case_1, fg_color='#081548', bg_color='#081548', height=500, width=700)
+        frame.place(x=10, y=30)
+        count = fe1.get()
+        print(count)
+        r = 10
+
+        if (int(count) < 11):
+            global entry_lst
+            global entry1
+            entry_lst = []
+            format = []
+            for i in range(int(count)):
+                ctk.CTkLabel(frame, text='Q ', font=("Times", 30)).place(x=10, y=r)
+                entry1 = ctk.CTkEntry(frame, width=500, fg_color='#C0CCE2', text_color='black')
+                entry1.place(x=80, y=r)
+                entry_lst.append(entry1)
+                chk_box = ctk.CTkCheckBox(frame,text='',border_color='#C0CCE2',checkmark_color='white')
+                chk_box.place(x=638,y=r)
+                radio = ctk.CTkRadioButton(frame,text='',border_color='#C0CCE2',width=14)
+                radio.place(x=597,y=r)
+                r += 50
+
+
+
+class features2(features):
+    def gen(self):
+        for i in entry_lst:
+            print(i.get())
+
+f1 = features()
+f2 = features2()
+
+
+ebtn = ctk.CTkButton(case_1,text="↵",font=('calibri',15),width=10,height=10,corner_radius=2000,command=f1.que)
+ebtn.place(x=230,y=2)
+
+#Vol broadcast
+blbl = ctk.CTkLabel(case_3,text='MESSAGE:',font=('Times',25,'italic'))
+blbl.place(x=5,y=20)
+
+btxtbox = ctk.CTkTextbox(case_3,width=520,height=450,border_width=3,border_color='#CADDFF',text_color='grey',font=('calibri',20))
+btxtbox.place(x=130,y=20)
+
+def snd():
+    message = btxtbox.get('1.0','end-1c')
+    print(message)
+    mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password='mysql022004',
+        database='carnival')
+    mycursor = mydb.cursor()
+    mycursor.execute("truncate broadcast")
+    mycursor.execute("INSERT INTO broadcast values('%s')"%btxtbox.get('1.0','end-1c'))
+    mydb.commit()
+    mydb.close()
+    print('broadcast successfull')
+
+
+
+bbtn = ctk.CTkButton(case_3,text='SEND',font=('Times',25,'bold'),fg_color='#CADDFF',text_color='Black',command=snd)
+bbtn.place(x=495,y=480)
+
+rbtn = ctk.StringVar(value='other')
+brbtn1 = ctk.CTkRadioButton(case_3,text='ALERT',font=('Times',20),value='yes',variable=rbtn,border_color='red',fg_color='red')
+brbtn1.place(x=5,y=480)
+brbtn2 = ctk.CTkRadioButton(case_3,text='GENERAL',font=('Times',20),value='no',variable=rbtn,border_color='grey',fg_color='grey')
+brbtn2.place(x=150,y=480)
+
+gbtn = ctk.CTkButton(case_1,text='GENERATE',font=('Times',15,'italic','bold'),command=f2.gen,
+                     fg_color='white',text_color='black',hover_color='grey')
+gbtn.place(x=450,y=2)
+rb = ctk.CTkLabel(case_1,text='🔘',font=('tahoma',20),fg_color='#081548')
+rb.place(x=603,y=2)
+my_tip =Hovertip(rb,"Answer Format: radio button")
+txtlb = ctk.CTkLabel(case_1,text='Text',font=('tahoma',20),fg_color='#081548',text_color='grey')
+txtlb.place(x=640,y=2)
+txtlb =Hovertip(rb,"Answer Format: TEXT")
 
 
 animated_panel = SlidePanel(window, 1.0, 0.7)
 animated_panel.configure(fg_color='#C0CCE2',bg_color='#C0CCE2',height=1500,border_width=5)
-ctk.CTkButton(animated_panel, text='HOME',text_color='#213354',fg_color='#CADDFF',border_width=2,border_color='#213354',width=200,command=lambda: frame1.tkraise()).pack( pady=10)
-ctk.CTkButton(animated_panel, text='MANAGE BATCH',text_color='#213354' ,border_width=2,border_color='#213354',fg_color='#7DAAFB',width=200,command=lambda: frame3.tkraise()).pack( pady=10)
-ctk.CTkButton(animated_panel, text='MY EVENTS',fg_color='#335BA2',border_width=2,border_color='#213354',text_color='white',width=200,command=lambda: frame2.tkraise()).pack(  pady=10)
+ctk.CTkButton(animated_panel, text='HOME',text_color='#213354',fg_color='#CADDFF',border_width=2,border_color='#213354',width=200,hover_color='#C0CCE2',command=lambda: frame1.tkraise()).pack( pady=10)
+ctk.CTkButton(animated_panel, text='MANAGE BATCH',text_color='#213354' ,border_width=2,border_color='#213354',fg_color='#7DAAFB',width=200,hover_color='#C0CCE2',command=lambda: frame3.tkraise()).pack( pady=10)
+ctk.CTkButton(animated_panel, text='WORKSPACE',fg_color='#335BA2',border_width=2,border_color='#213354',text_color='white',width=200,hover_color='#C0CCE2',command=lambda: frame2.tkraise()).pack(  pady=10)
 button_x = 0.5
 button = ctk.CTkButton(window, text='☰', command=animated_panel.animate,height=10,width=2,fg_color='#213354',bg_color='black')
 button.place(relx=0.98, rely=0.03, anchor='center')
