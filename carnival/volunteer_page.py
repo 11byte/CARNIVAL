@@ -1,16 +1,5 @@
 import mysql.connector
 from idlelib.tooltip import Hovertip
-# mydb = mysql.connector.connect(
-#     host='localhost',
-#     user='root',
-#     password='mysql022004',
-#     database='carnival'
-# )
-# mycursor = mydb.cursor()
-# mycursor.execute('SELECT * FROM user_login')
-# users = mycursor.fetchall()
-# for user in users:
-#     print(user)
 import tkinter as tr
 from tkinter import ttk
 import customtkinter as ctk
@@ -67,16 +56,18 @@ win_hm = ctk.CTkFrame(window,height=800,width=600)
 win_man = ctk.CTkFrame(window,height=800,width=600)
 win_eve = ctk.CTkFrame(window,height=800,width=600)
 
+def center_window(window, width, height):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width // 2) - (width // 2)
+    y = (screen_height // 2) - (height // 2)
+    window.geometry(f'{width}x{height}+{x}+{y}')
+
+desired_width = 1000
+desired_height = 600
+center_window(window, desired_width, desired_height)
 
 
-# win_man.grid(row=0,column=0)
-# win_eve.grid(row=0,column=0)
-
-# def hm():
-#     btn1 = ctk.CTkButton(win_hm,text='hm_btn1')
-#     btn1.pack(pady=10,anchor='center')
-#     btn2 = ctk.CTkButton(win_hm, text='hm_btn2')
-#     btn2.pack(pady=10, anchor='center')
 
 sym_lbl = ctk.CTkLabel(window,text='I',font=('Webdings',550),bg_color='black',height=600)
 sym_lbl.place(x=580,y=0)
@@ -225,11 +216,15 @@ ebtn = ctk.CTkButton(case_1,text="↵",font=('calibri',15),width=10,height=10,co
 ebtn.place(x=230,y=2)
 
 #Vol broadcast
-blbl = ctk.CTkLabel(case_3,text='MESSAGE:',font=('Times',25,'italic'))
+b_innerframe1 = ctk.CTkFrame(case_3,height=300,width=740,fg_color='#081548',border_width=2,border_color='white')
+b_innerframe1.place(x=5,y=36)
+blbl = ctk.CTkLabel(b_innerframe1,text='MESSAGE:',font=('Times',25,'italic'))
 blbl.place(x=5,y=20)
 
-btxtbox = ctk.CTkTextbox(case_3,width=520,height=450,border_width=3,border_color='#CADDFF',text_color='grey',font=('calibri',20))
+btxtbox = ctk.CTkTextbox(b_innerframe1,width=520,height=200,border_width=3,fg_color='black',border_color='#CADDFF',text_color='grey',font=('calibri',20))
 btxtbox.place(x=130,y=20)
+ctk.CTkLabel(case_3,text='SEND',font=('Times',15,'bold')).place(x=5,y=0)
+ctk.CTkButton(case_3,text='<',border_width=5,border_color='black',height=15,width=15).place(x=40,y=0)
 
 def snd():
     message = btxtbox.get('1.0','end-1c')
@@ -248,14 +243,14 @@ def snd():
 
 
 
-bbtn = ctk.CTkButton(case_3,text='SEND',font=('Times',25,'bold'),fg_color='#CADDFF',text_color='Black',command=snd)
-bbtn.place(x=495,y=480)
+bbtn = ctk.CTkButton(b_innerframe1,text='SEND',font=('Times',25,'bold'),fg_color='#CADDFF',text_color='Black',command=snd)
+bbtn.place(x=495,y=250)
 
 rbtn = ctk.StringVar(value='other')
-brbtn1 = ctk.CTkRadioButton(case_3,text='ALERT',font=('Times',20),value='yes',variable=rbtn,border_color='red',fg_color='red')
-brbtn1.place(x=5,y=480)
-brbtn2 = ctk.CTkRadioButton(case_3,text='GENERAL',font=('Times',20),value='no',variable=rbtn,border_color='grey',fg_color='grey')
-brbtn2.place(x=150,y=480)
+brbtn1 = ctk.CTkRadioButton(b_innerframe1,text='ALERT',font=('Times',20),value='yes',variable=rbtn,border_color='red',fg_color='red')
+brbtn1.place(x=5,y=250)
+brbtn2 = ctk.CTkRadioButton(b_innerframe1,text='GENERAL',font=('Times',20),value='no',variable=rbtn,border_color='grey',fg_color='grey')
+brbtn2.place(x=150,y=250)
 
 gbtn = ctk.CTkButton(case_1,text='GENERATE',font=('Times',15,'italic','bold'),command=f2.gen,
                      fg_color='white',text_color='black',hover_color='grey')
