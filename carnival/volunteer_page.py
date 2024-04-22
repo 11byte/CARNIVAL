@@ -1,6 +1,17 @@
 import mysql.connector
 from idlelib.tooltip import Hovertip
-import tkinter as tr
+# mydb = mysql.connector.connect(
+#     host='localhost',
+#     user='root',
+#     password='mysql022004',
+#     database='carnival'
+# )
+# mycursor = mydb.cursor()
+# mycursor.execute('SELECT * FROM user_login')
+# users = mycursor.fetchall()
+# for user in users:
+#     print(user)
+import tkinter as tk
 from tkinter import ttk
 import customtkinter as ctk
 from tkinter import messagebox as mb
@@ -67,7 +78,14 @@ desired_width = 1000
 desired_height = 600
 center_window(window, desired_width, desired_height)
 
+# win_man.grid(row=0,column=0)
+# win_eve.grid(row=0,column=0)
 
+# def hm():
+#     btn1 = ctk.CTkButton(win_hm,text='hm_btn1')
+#     btn1.pack(pady=10,anchor='center')
+#     btn2 = ctk.CTkButton(win_hm, text='hm_btn2')
+#     btn2.pack(pady=10, anchor='center')
 
 sym_lbl = ctk.CTkLabel(window,text='I',font=('Webdings',550),bg_color='black',height=600)
 sym_lbl.place(x=580,y=0)
@@ -140,17 +158,70 @@ btn2 = ctk.CTkButton(frame1,text="CLEAR",font=('algerian',20),border_width=2)
 btn2.place(x=150,y=500)
 
 #manage events widgets
-table = ttk.Treeview(frame3,height=10,columns=('Name','Phone No.','ID'),show='headings')
-table.heading('Name',text='Participant Name')
-table.heading('Phone No.',text='Participant Contact No.')
-table.heading('ID',text='Moodle ID')
-table.place(x=20,y=210)
 
-mbtn1 = ctk.CTkButton(frame3,text='FETCH CURRENT BATCH',fg_color='#213354')
-mbtn1.place(x=10,y=130)
+mydb = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password='mysql022004',
+        database='carnival'
+    )
+myevent = 'treasure_hunt'
+def clr_batch():
 
-mbtn2 = ctk.CTkButton(frame3,text='CLEAR CURRENT BATCH',fg_color='#213354')
-mbtn2.place(x=10,y=370)
+
+    cursor = mydb.cursor()
+    query = f"truncate {myevent} "
+    cursor.execute(query)
+    mb.showinfo(message='cleared batch')
+
+
+
+mydb = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='mysql022004',
+    database='carnival'
+)
+
+# Function to fetch data from the database
+
+def fetch_data():
+    cursor = mydb.cursor()
+    query = f"SELECT name, phn_no FROM {myevent} "
+    cursor.execute(query)
+    return cursor.fetchall()
+
+# Set up the main window
+
+
+# Create a Treeview widget
+tree = ttk.Treeview(frame3, columns=('Name', 'Phone Number'))
+tree.heading('#0', text='Index')
+tree.heading('Name', text='Name')
+tree.heading('Phone Number', text='Phone Number')
+tree.column('#0', width=100, stretch=tk.NO)  # Increase the width of the first column
+tree.column('Name', width=200, stretch=tk.NO)  # Increase the width of the 'Name' column
+tree.column('Phone Number', width=200, stretch=tk.NO)  # Increase the width of the 'Name' column
+
+
+# Insert data into the Treeview widget
+for index, (name, phone_number) in enumerate(fetch_data(), start=1):
+    tree.insert('', 'end', text=str(index), values=(name, phone_number))
+style = ttk.Style()
+style.configure('Treeview', font=('Times', 16),background="gold",
+                foreground="black",
+                rowheight=40,
+                fieldbackground="lightgrey",desired_height=150)
+tree.configure(height=10)
+tree.place(x=20,y=210)
+
+
+
+# mbtn1 = ctk.CTkButton(frame3,text='FETCH CURRENT BATCH',fg_color='#213354')
+# mbtn1.place(x=10,y=130)
+
+mbtn2 = ctk.CTkButton(frame3,text='CLEAR CURRENT BATCH',fg_color='#213354',command=clr_batch)
+mbtn2.place(x=10,y=520)
 
 mlbl1 =ctk.CTkLabel(frame3,text='MANAGE EVENT...',font=("Gabriola", 65,"bold","italic"))
 mlbl1.place(x=140,y=5)
